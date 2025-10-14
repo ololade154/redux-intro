@@ -22,7 +22,9 @@ function reducer(state = initialState, action) {
       if (state.loan > 0) return state;
       return {
         ...state,
-        balance: state.balance,
+        loan: action.payload.amount,
+        loanPurpose: action.payload.purpose,
+        balance: state.balance + action.payload.amount,
       };
     case 'account/payLoan':
       return {
@@ -39,4 +41,15 @@ function reducer(state = initialState, action) {
 //redux store
 const store = createStore(reducer);
 store.dispatch({ type: 'account/deposite', payload: 500 });
-console.log('hello');
+console.log(store.getState());
+store.dispatch({
+  type: 'account/requestLoan',
+  payload: {
+    amount: 1000,
+    purpose: 'Buy a car',
+  },
+});
+console.log(store.getState());
+
+store.dispatch({ type: 'account/payLaon' });
+console.log(store.getState());
