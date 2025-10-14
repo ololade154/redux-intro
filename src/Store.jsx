@@ -1,9 +1,11 @@
 import { createStore } from 'redux';
+//initial value of the state
 const initialState = {
   balance: 0,
   loan: 0,
   loanPurpose: '',
 };
+//reducer function
 function reducer(state = initialState, action) {
   switch (action.type) {
     case 'account/deposite':
@@ -35,3 +37,6 @@ function reducer(state = initialState, action) {
   }
 }
 //redux store
+const store = createStore(reducer);
+store.dispatch({ type: 'account/deposite', payload: 500 });
+console.log('hello');
