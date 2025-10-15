@@ -1,12 +1,17 @@
-import { createStore } from 'redux';
+import { combineReducers, createStore } from 'redux';
 //initial value of the state
-const initialState = {
+const initialStateAccount = {
   balance: 0,
   loan: 0,
   loanPurpose: '',
 };
+const initialStateCustomer = {
+  fullName: '',
+  nationalId: '',
+  createdAt: '',
+};
 //reducer function
-function reducer(state = initialState, action) {
+function accountReducer(state = initialStateAccount, action) {
   switch (action.type) {
     case 'account/deposite':
       return {
@@ -30,7 +35,7 @@ function reducer(state = initialState, action) {
       return {
         ...state,
         loan: 0,
-        loanPurpse: '',
+        loanPurpose: '',
         balance: state.balance - state.loan,
       };
 
@@ -38,8 +43,30 @@ function reducer(state = initialState, action) {
       return state;
   }
 }
+const customerReducer = (state = initialStateCustomer, action) => {
+  switch (action.type) {
+    case 'customer/createAccount':
+      return {
+        ...state,
+        fullName: action.payload.fullName,
+        nationalId: action.payload.nationalId,
+        createdAt: action.payload.createdAt,
+      };
+    case 'customer/updateName':
+      return {
+        ...state,
+        fullName: action.payload,
+      };
+    default:
+      return state;
+  }
+};
 //redux store
-const store = createStore(reducer);
+const rootReducer = combineReducers({
+  account: accountReducer,
+  customer: customerReducer,
+});
+const store = createStore(rootReducer);
 // store.dispatch({ type: 'account/deposite', payload: 500 });
 // console.log(store.getState());
 // store.dispatch({
@@ -89,4 +116,18 @@ const payLoan = () => {
   return { type: 'account/payLoan' };
 };
 store.dispatch(payLoan());
+console.log(store.getState());
+const createAccount = (fullName, nationalId) => {
+  return {
+    type: 'customer/createAccount',
+    payload: { fullName, nationalId, createdAt: new Date().toISOString() },
+  };
+};
+const updateName = (fullName) => {
+  return {
+    type: 'customer/updateName',
+    payload: fullName,
+  };
+};
+store.dispatch(createAccount('ololade', '1234'));
 console.log(store.getState());
